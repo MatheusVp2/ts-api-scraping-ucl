@@ -1,9 +1,11 @@
 import { Request, Response } from 'express';
+import { EncryptData } from '../../utils/data-encrypt';
 import { UserRepository, UserType } from './../../domain/repository/user-repository';
 import { ExtractError } from './../../utils/extract-error';
 import { UserNotFoundError } from './error';
 import { BodyLoginType, BodyLoginUseCase } from './useCase/bot-login-usercase';
 import { BodyRegisterType, BotRegisterUseCase } from './useCase/bot-register-usecase';
+import { env } from "../../config/env";
 
 export class  BotController {
 
@@ -16,7 +18,13 @@ export class  BotController {
             BotRegisterUseCase.validateEmail(body.email)
 
             const session = await BotRegisterUseCase.validateServiceAuth(body.email, body.password)
-            const { email, password, discord_id, send_email } = body;
+            
+            let { email, password, discord_id, send_email } = body;
+
+            const encrypt = new EncryptData(env.SECRET_ENCRYPT)
+            email = encrypt.encrypt(email)
+            password = encrypt.encrypt(password)
+
             const user : UserType = { email, password, discord_id, send_email, session }
             userRepository.createUser(user);
 
@@ -40,7 +48,12 @@ export class  BotController {
             if (foundUser.Count === 0) throw new UserNotFoundError("Usuário não encontrado, registre-se")
 
             const user = foundUser.Items[0] as UserType
-            const session = await BodyLoginUseCase.validateServiceAuth(user.email, user.password)
+            
+            const encrypt = new EncryptData(env.SECRET_ENCRYPT)
+            let email = encrypt.decrypt(user.email)
+            let password = encrypt.decrypt(user.password)
+
+            const session = await BodyLoginUseCase.validateServiceAuth(email, password)
             user.session = session
             userRepository.updateUser(user)
 

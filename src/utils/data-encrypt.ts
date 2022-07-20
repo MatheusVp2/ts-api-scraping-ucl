@@ -3,15 +3,15 @@ import crypto from "crypto";
 class EncryptData {
     algorithm: string;
     key: Buffer;
-    iv: Buffer;
+    iv: any;
 
     constructor(chave: string){
         const chaveMd5 = crypto.createHash("md5").update(chave).digest("hex")
         const chaveB64 = Buffer.from(chaveMd5).toString('base64')
 
-        this.algorithm = "aes-256-cbc";
+        this.algorithm = "bf-ecb";
         this.key = Buffer.from( chaveB64, "base64" );
-        this.iv = crypto.randomBytes( 16 );
+        this.iv = ''
     }
 
     encrypt(text: string){
