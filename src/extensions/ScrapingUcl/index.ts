@@ -11,9 +11,9 @@ class ScrapingUcl {
         const $ = cheerio.load(html);
 
         let list_tabs = []
-        $('.tabs a').map((index, elem) => list_tabs.push($(elem).attr('href').trim().replace('#', '')))
+        $('.tabs a').map((index, elem) => list_tabs.push( $(elem).attr('href').trim().replace('#', '') ))
 
-        var list_html = list_tabs.map((elem) => $(`#${elem}`).html()) // Gera o HTML dos Anos
+        var list_html = list_tabs.map((elem) => $(`#${elem}`).html() ) // Gera o HTML dos Anos
         var $$ = list_html.map((elem) => cheerio.load(elem))          // Gera o Objeto Cheerio dos Html dos Anos
 
         /* ############### Pega as Materias ############### */
@@ -114,6 +114,11 @@ class ScrapingUcl {
         return lista_boletos
     }
 
+    static getTabsIds (html: any, id: string): String[] {
+        const $ = cheerio.load(html);
+        return $(`div[id="${id}"] .tabs li a`).map( (index, item) => $(item).attr('href').trim().replace('#', '') ).toArray()
+    }
+    
 
 }
 
