@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "ts-node-dev src/server.ts --respawn --transpileOnly",
     "script": "ts-node src/script.ts",
-    "teste": "ts-node teste.ts"
+    "teste": "ts-node src/teste.ts"
   },
   "keywords": [],
   "author": "Matheus Oliveira & Breno Robert",

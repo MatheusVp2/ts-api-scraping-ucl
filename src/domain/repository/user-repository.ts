@@ -13,8 +13,8 @@ export type UserType = {
 
 export class UserRepository {
     
-    private client: AWS.DynamoDB.DocumentClient;
-    private table: string;
+    public client: AWS.DynamoDB.DocumentClient;
+    public table: string;
 
     constructor () {
         this.client = database
