@@ -34,10 +34,5 @@ export class BotRegisterUseCase {
         return session
     }
 
-    
-
-    static async validateUserDatabase () {
-
-    }
 
 }

@@ -34,9 +34,12 @@ export class  BotController {
             response.status(code).json({ name, message })
         }
     }
+    
+    async delete ( request: Request, response: Response ) {
+        
+    }
 
     async login ( request: Request, response: Response ) {
-        
         try {
             const userRepository = new UserRepository();
 
@@ -62,7 +65,6 @@ export class  BotController {
             const { code, name, message } = ExtractError.of(error)
             response.status(code).json({ name, message })
         }
-
     }
 
     async notas ( request: Request, response: Response ) {
@@ -77,8 +79,6 @@ export class  BotController {
         
     }
 
-    async delete ( request: Request, response: Response ) {
-        
-    }
+    
 
 }
