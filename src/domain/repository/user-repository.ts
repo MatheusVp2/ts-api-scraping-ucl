@@ -1,6 +1,6 @@
-import database from "../../database";
+import { QueryOutput } from "aws-sdk/clients/dynamodb";
 import { v4 as uuidv4 } from 'uuid';
-import { PutItemOutput, QueryOutput } from "aws-sdk/clients/dynamodb";
+import database from "../../database";
 
 export type UserType = {
     id?: string,
@@ -38,7 +38,7 @@ export class UserRepository {
     }
 
     // Insert
-    async createNewUser ( { email, password, discord_id, send_email, session } : UserType ){
+    async createUser ( { email, password, discord_id, send_email, session } : UserType ){
         const user : UserType = {
             id: uuidv4(),
             email,
@@ -47,6 +47,12 @@ export class UserRepository {
             send_email,
             session: session
         }
+        const params = { TableName: this.table, Item: user }
+        return await this.client.put(params).promise()
+    }
+
+    // Insert
+    async updateUser ( user : UserType ){
         const params = { TableName: this.table, Item: user }
         return await this.client.put(params).promise()
     }

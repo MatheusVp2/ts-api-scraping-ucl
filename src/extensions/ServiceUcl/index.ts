@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { wrapper } from 'axios-cookiejar-support'
-import { CookieJar, Cookie } from "tough-cookie"
+import { Cookie, CookieJar } from "tough-cookie"
 import { AuthServiceUcl, LinksUcl, SessionServiceUcl } from './types'
 wrapper(axios)
 
@@ -35,6 +35,12 @@ class ServiceUcl {
         const newSession = this.getSession(session, LinksUcl.FINANCEIRO)
         const financeiroPage = await axios.get( LinksUcl.FINANCEIRO, { jar: newSession } )
         return financeiroPage.data;
+    }
+    
+    async horario({ session } : SessionServiceUcl) : Promise<any> {
+        const newSession = this.getSession(session, LinksUcl.HORARIO)
+        const horarioPage = await axios.get( LinksUcl.HORARIO, { jar: newSession } )
+        return horarioPage.data;
     }
 
 }

@@ -1,7 +1,8 @@
 enum LinksUcl {
     LOGIN = 'https://eies.ucl.br/webaluno/login/',
     QUADRODENOTAS = 'https://eies.ucl.br/webaluno/quadrodenotas/',
-    FINANCEIRO = 'https://eies.ucl.br/webaluno/financeiro/'
+    FINANCEIRO = 'https://eies.ucl.br/webaluno/financeiro/',
+    HORARIO = 'https://eies.ucl.br/webaluno/horarioindividual/'
 }
 
 type AuthServiceUcl = {

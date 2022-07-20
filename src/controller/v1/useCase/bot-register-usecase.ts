@@ -1,7 +1,7 @@
-import { ParameterValidationError } from './../error/parameter-validation-error';
 import { ServiceUcl } from "../../../extensions/ServiceUcl";
 import { AuthServiceUcl } from "../../../extensions/ServiceUcl/types";
 import { AuthenticationServiceError, MissingParamError } from "../error";
+import { ParameterValidationError } from './../error/parameter-validation-error';
 
 export type BodyRegisterType = {
     email: string,
@@ -33,6 +33,8 @@ export class BotRegisterUseCase {
         if( !session ) throw new AuthenticationServiceError(`Erro ao autenticar no service UCL.`)
         return session
     }
+
+    
 
     static async validateUserDatabase () {
 
