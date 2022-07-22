@@ -1,7 +1,7 @@
 
-import cheerio from "cheerio";
+import cheerio from "cheerio"
 
-export enum TabsPeriodosEnum {
+export enum IdsTabsPeriodosEnum {
     NOTAS = 'aluno_notas',
     HORARIOS = 'aluno_horarios'
 }
@@ -12,12 +12,12 @@ export class ScrapingUcl {
         return false;
     }
 
-    static getPeriodos (html: any, id: string): String[] {
+    static getPeriodos (html: any, id: IdsTabsPeriodosEnum ) {
         const $ = cheerio.load(html);
         return $(`div[id="${id}"] .tabs li a`).map( (index, item) => $(item).attr('href').trim().replace('#', '') ).toArray()
     }
 
-    static getHtmlPeriodo (html: any, periodo: any) : string {
+    static getHtmlPeriodo (html: any, periodo: string) : string {
         const $ = cheerio.load(html);
         return $(`div[id=${periodo}]`).toString()
     }
@@ -26,7 +26,7 @@ export class ScrapingUcl {
         const $ = cheerio.load(html)
         return $('.collapsible-header').map( (index, item) => {
             const materia = (item.lastChild as any ).data.trim()
-            return { materia }
+            return materia
         } ).toArray()
     }
 
@@ -34,93 +34,75 @@ export class ScrapingUcl {
         const $ = cheerio.load(html)
         return $('.collection-item').children().map( (index, item) => {
             let subItemProfessor = ( item.children[1] as any )
-            let professor = subItemProfessor.data.trim().split('(')[0].trim()
+            let nome = subItemProfessor.data.trim().split('(')[0].trim()
             let email = subItemProfessor.data.trim().split('(')[1].replace(')', '')
-            return { professor, email }
+            return { nome, email }
         }).toArray()
     }
     
+    private static getChipsExtract ( master: any ) {
+        const situacao = ( master[0].children[0] as any ).data.trim()
+        const carga_horaria = ( master[1].children[0] as any ).data.trim()
+        const faltas = ( master[2].children[0] as any ).data.trim()
+        const media = ( master[3].children[0] as any ).data.trim()
+        return { situacao, carga_horaria, faltas, media }
+    }
+
     static getChips (html: any) {
         const $ = cheerio.load(html)
         return $('.center-align').map( ( index, item ) => {
             const master = $(item).find('.chip')
             if( master.length === 4 ) {
-                const situacao = ( master[0].children[0] as any ).data.trim()
-                const carga_horaria = ( master[1].children[0] as any ).data.trim()
-                const faltas = ( master[2].children[0] as any ).data.trim()
-                const media = ( master[3].children[0] as any ).data.trim()
-                return { situacao, carga_horaria, faltas, media }
+                return this.getChipsExtract(master)
             }
         }).toArray()
     }
 
-    static parseQuadroDeNotas(html: any) {
-        const $ = cheerio.load(html);
-
-        let list_tabs = []
-        $('.tabs a').map((index, elem) => list_tabs.push( $(elem).attr('href').trim().replace('#', '') ))
-
-        var list_html = list_tabs.map((elem) => $(`#${elem}`).html() ) // Gera o HTML dos Anos
-        var $$ = list_html.map((elem) => cheerio.load(elem))          // Gera o Objeto Cheerio dos Html dos Anos
-
-        /* ############### Pega as Materias ############### */
-        let lista_materias = []
-        $$.map((element) => {
-            let base = []
-            element('.collapsible-header').map((index, elem: any) => {
-                base.push(elem.children[1].data.trim())
-            })
-            lista_materias.push(base)
-        });
-
-        /* ############### Pega os Professores ############### */
-        let lista_professores = []
-        $$.map(element => {
-            let base = []
-            element('.collection-item').children().map((index, elem : any) => {
-                let professor = elem.children[1].data.trim().split('(')[0].trim()
-                let email = elem.children[1].data.trim().split('(')[1].replace(')', '')
-                base.push([professor, email])
-            })
-            lista_professores.push(base)
-        })
-
-        /* ############### Pega os Chips ( Situação, Carga Horaria, Faltas, Media ) ############### */
-        let lista_chips = []
-        $$.map(element => {
-            let base_um = []
-            element('.center-align').map((index, ell:any) => {
-                let base_dois = []
-                $(ell).find('.chip').map((cout, elem: any) => {
-                    base_dois.push( elem.children[0].data.replace('\n', '').trim() )
-                })
-                base_um.push(base_dois)
-            })
-            lista_chips.push(base_um.filter(x => x.length > 1))
-        })
-
-        /* ############### Pega as Notas ############### */
-        let lista_notas = []
-        $$.map(element => {
-            let geral = []
-            element('tbody').map((index, ell:any) => {
-                let base_um = []
-                $(ell).find('tr').map((iindex, elemento:any) => {
-                    let base_dois = []
-                    $(elemento).find('td').map((cout, elem:any) => {
-                        base_dois.push(elem.children[0].data.trim())
-                    })
-                    base_um.push(base_dois)
-                })
-                geral.push(base_um)
-            })
-            lista_notas.push(geral)
-        })
-
-        return [ list_tabs, lista_materias, lista_professores, lista_chips, lista_notas ]
+    private static getNotasExtract (master_tr: any) {
+        const grupo = (master_tr[0].children[0] as any).data.trim()
+        const data = (master_tr[1].children[0] as any).data.trim()
+        const avaliacao = (master_tr[2].children[0] as any).data.trim()
+        const peso = (master_tr[3].children[0] as any).data.trim()
+        const nota = (master_tr[4].children[0] as any).data.trim()
+        return { grupo, data, avaliacao, peso, nota }
     }
 
-    static parseFinanceiro(html: any) {
+    static getNotas (html: any) {
+        const $ = cheerio.load(html)
+        return $('tbody').map( ( index_tbody, item_tbody ) => {
+            const master = $(item_tbody).find('tr').map( ( index_tr, item_tr ) => {
+                const master_tr = $(item_tr).find('td')
+                return this.getNotasExtract(master_tr)
+            }).toArray()
+            return Array(master)
+        }).toArray()
+    }
+
+    private static getNotasPeriodoExtract (html: any) {
+        const materias = this.getMaterias(html)
+        const professores = this.getProfessores(html)
+        const chips = this.getChips(html)
+        const notas = this.getNotas(html)
+        return { materias, professores, chips, notas }
+    }
+
+    static getNotasPeriodo (pagina: string, periodo: string) {
+        const html = this.getHtmlPeriodo(pagina, periodo)
+        const { materias, professores, chips, notas } = this.getNotasPeriodoExtract(html)
+        const aulas =  materias.map( (item, index) => {
+            return { materia: item, professor: professores[index], chip: chips[index], avaliacao: notas[index] }
+        })
+        return { periodo, aulas }
+    }
+
+    static getAllNotasPeriodos(pagina: any) {
+        const periodos = this.getPeriodos( pagina, IdsTabsPeriodosEnum.NOTAS )
+        return periodos.map(item => {
+            return this.getNotasPeriodo(pagina, item)
+        })
+    }
+
+    static parseFinanceiro (html: any) {
         const $ = cheerio.load(html);
 
         const tab_fin_open   = $('#fin1')
