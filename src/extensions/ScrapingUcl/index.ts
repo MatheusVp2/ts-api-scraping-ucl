@@ -1,10 +1,57 @@
 
 import cheerio from "cheerio";
 
-class ScrapingUcl {
+export enum TabsPeriodosEnum {
+    NOTAS = 'aluno_notas',
+    HORARIOS = 'aluno_horarios'
+}
+
+export class ScrapingUcl {
 
     static isStillSessionAvaliable(html: any) : boolean {
         return false;
+    }
+
+    static getPeriodos (html: any, id: string): String[] {
+        const $ = cheerio.load(html);
+        return $(`div[id="${id}"] .tabs li a`).map( (index, item) => $(item).attr('href').trim().replace('#', '') ).toArray()
+    }
+
+    static getHtmlPeriodo (html: any, periodo: any) : string {
+        const $ = cheerio.load(html);
+        return $(`div[id=${periodo}]`).toString()
+    }
+
+    static getMaterias (html: any) {
+        const $ = cheerio.load(html)
+        return $('.collapsible-header').map( (index, item) => {
+            const materia = (item.lastChild as any ).data.trim()
+            return { materia }
+        } ).toArray()
+    }
+
+    static getProfessores (html: any) {
+        const $ = cheerio.load(html)
+        return $('.collection-item').children().map( (index, item) => {
+            let subItemProfessor = ( item.children[1] as any )
+            let professor = subItemProfessor.data.trim().split('(')[0].trim()
+            let email = subItemProfessor.data.trim().split('(')[1].replace(')', '')
+            return { professor, email }
+        }).toArray()
+    }
+    
+    static getChips (html: any) {
+        const $ = cheerio.load(html)
+        return $('.center-align').map( ( index, item ) => {
+            const master = $(item).find('.chip')
+            if( master.length === 4 ) {
+                const situacao = ( master[0].children[0] as any ).data.trim()
+                const carga_horaria = ( master[1].children[0] as any ).data.trim()
+                const faltas = ( master[2].children[0] as any ).data.trim()
+                const media = ( master[3].children[0] as any ).data.trim()
+                return { situacao, carga_horaria, faltas, media }
+            }
+        }).toArray()
     }
 
     static parseQuadroDeNotas(html: any) {
@@ -114,14 +161,4 @@ class ScrapingUcl {
         return lista_boletos
     }
 
-    static getTabsIds (html: any, id: string): String[] {
-        const $ = cheerio.load(html);
-        return $(`div[id="${id}"] .tabs li a`).map( (index, item) => $(item).attr('href').trim().replace('#', '') ).toArray()
-    }
-    
-
-}
-
-export {
-    ScrapingUcl
 }

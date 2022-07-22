@@ -107,3 +107,6 @@ dist
 *.lock
 
 **/teste.ts
+
+
+*.html
