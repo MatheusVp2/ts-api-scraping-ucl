@@ -6,5 +6,8 @@ export const env = {
         SECRET_ACESS_KEY : process.env.AWS_SECRET_ACESS_KEY,
         DEFAULT_REGION : process.env.AWS_DEFAULT_REGION
     },
-    SECRET_ENCRYPT: process.env.SECRET_ENCRYPT_DATA
+    ENCRYPT : {
+        SECRET : process.env.ENCRYPT_SECRET,
+        ALGORITHM : process.env.ENCRYPT_ALGORITHM
+    }
 }
