@@ -5,10 +5,11 @@
   "main": "src/server.ts",
   "scripts": {
     "build" : "tsc",
-    "start" : "node dist/server.js",
+    "start": "vercel dev",
+    "deploy" : "vercel deploy --prod",
     "dev": "ts-node-dev src/server.ts --respawn --transpileOnly",
-    "script": "ts-node src/script.ts",
-    "teste": "ts-node src/teste.ts"
+    "script:code": "ts-node src/script.ts",
+    "teste:code": "ts-node src/teste.ts"
   },
   "keywords": [],
   "author": "Matheus Oliveira & Breno Robert",
@@ -35,6 +36,7 @@
     "nodemailer-express-handlebars": "^5.0.0",
     "nodemon": "^2.0.19",
     "tough-cookie": "^4.0.0",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "vercel": "^27.2.0"
   }
 }
