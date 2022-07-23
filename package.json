@@ -5,8 +5,8 @@
   "main": "server.ts",
   "scripts": {
     "build" : "tsc --outDir public",
+    "start" : "node ./public/server.js",
     "start:vercel": "vercel dev",
-    "start" : "node server.ts",
     "deploy" : "vercel deploy --prod",
     "dev": "ts-node-dev src/server.ts --respawn --transpileOnly",
     "script:code": "ts-node src/script.ts",

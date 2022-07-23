@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const bot_controller_1 = require("./../../controller/v1/bot.controller");
+const route = (0, express_1.Router)();
+const controller = new bot_controller_1.BotController();
+route.post('/bot/register', controller.register);
+route.post('/bot/login', controller.login);
+route.get('/bot/periodos', controller.periodos);
+route.get('/bot/notas', controller.notas);
+route.get('/bot/boletos', controller.boletos);
+exports.default = route;
