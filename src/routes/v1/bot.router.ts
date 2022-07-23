@@ -8,6 +8,7 @@ const controller = new BotController();
 
 route.post('/bot/register', controller.register )
 route.post('/bot/login', controller.login )
+route.get('/bot/periodos', controller.periodos )
 route.get('/bot/notas', controller.notas )
 route.get('/bot/boletos', controller.boletos )
 

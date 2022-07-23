@@ -102,45 +102,21 @@ export class ScrapingUcl {
         })
     }
 
-    static parseFinanceiro (html: any) {
-        const $ = cheerio.load(html);
+    static getBoletos (html: any) {
+        const $ = cheerio.load(html)
+        return $('#fin1 table tbody tr').map( ( index, item ) => {
+            const master_td = $(item).find('td')
 
-        const tab_fin_open   = $('#fin1')
-        const table_fin_open = $(tab_fin_open).find('table')
-        const tbody          = $(table_fin_open).find('tbody')
-        const tr             = $(tbody).find('tr')
-
-        let lista_boletos = []
-        tr.map((index, elem) => {
-            let base = []
+            const ocorrencia = (master_td[0].children[0] as any).data.trim()
+            const processamento = (master_td[1].children[0] as any).data.trim()
+            const vencimento = (master_td[2].children[0] as any).data.trim()
+            const valor = (master_td[3].children[0] as any).data.trim()
             
-            $(elem).find('td').map((cout, elem: any) => {
-                base.push(elem.children[0].data.trim())
-            })
-
-            var url_boleto = $( $(elem).children()[5] ).find('a')
-
-            if (url_boleto.length >= 3) {
-                base[4] = true
-                base[5] = url_boleto[0].attribs.href
-            } else {
-                base[4] = false
-                base[5] = null
-            }
-
-            let dataJson = {
-                id: base[0],
-                processamento: base[1],
-                vencimento: base[2],
-                valor: base[3],
-                is_Open: base[4],
-                url: base[5],
-            }
-
-            lista_boletos.push(dataJson)
-        })
-
-        return lista_boletos
+            const findBoleto = $(master_td[5]).find('a')
+            const boleto = findBoleto.length != 0 ? findBoleto[0].attribs.href : null
+            
+            return { ocorrencia, processamento, vencimento, valor, boleto }
+        } ).toArray()
     }
 
 }

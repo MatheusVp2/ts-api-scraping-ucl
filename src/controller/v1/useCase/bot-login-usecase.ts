@@ -19,4 +19,5 @@ export class BodyLoginUseCase {
         if( !session ) throw new AuthenticationServiceError(`Erro ao autenticar no service UCL.`)
         return session
     }
+    
 }
