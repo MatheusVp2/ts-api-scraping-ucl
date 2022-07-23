@@ -2,10 +2,10 @@
   "name": "typescript-scraping-ucl",
   "version": "0.1.0",
   "description": "API DE SCRAPING DA PAGINA DA FACULDADE UCL",
-  "main": "server.ts",
+  "main": "index.js",
   "scripts": {
-    "build" : "tsc --outDir public",
-    "start" : "node ./public/server.js",
+    "build" : "tsc",
+    "start" : "node server.js",
     "start:vercel": "vercel dev",
     "deploy" : "vercel deploy --prod",
     "dev": "ts-node-dev src/server.ts --respawn --transpileOnly",
