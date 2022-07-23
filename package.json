@@ -4,6 +4,8 @@
   "description": "API DE SCRAPING DA PAGINA DA FACULDADE UCL",
   "main": "src/server.ts",
   "scripts": {
+    "build" : "tsc",
+    "start" : "node dist/server.js",
     "dev": "ts-node-dev src/server.ts --respawn --transpileOnly",
     "script": "ts-node src/script.ts",
     "teste": "ts-node src/teste.ts"
