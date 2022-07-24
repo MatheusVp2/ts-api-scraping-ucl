@@ -6,6 +6,9 @@ const route = Router();
 
 const controller = new BotController();
 
+route.get('/bot', (req, res) => {
+    res.json({message: "Rota do Bot Rodando."})
+})
 route.post('/bot/register', controller.register )
 route.post('/bot/login', controller.login )
 route.get('/bot/periodos', controller.periodos )
