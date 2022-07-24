@@ -4,8 +4,8 @@
   "description": "API DE SCRAPING DA PAGINA DA FACULDADE UCL",
   "main": "index.js",
   "scripts": {
-    "build" : "tsc",
-    "start" : "node server.js",
+    "build" : "tsc --outDir public",
+    "start" : "node index.js",
     "start:vercel": "vercel dev",
     "deploy" : "vercel deploy --prod",
     "dev": "ts-node-dev src/server.ts --respawn --transpileOnly",
