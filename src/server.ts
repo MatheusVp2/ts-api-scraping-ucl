@@ -9,7 +9,7 @@ app.use( cors() );
 app.use( express.json() );
 
 // Configura as rotas, organizadas
-app.get('/', (req, res) => { return res.json({mensagem: "API ESTA RODANDO!"}) })
+app.get('/', (req, res) => { return res.json({mensagem: "API ESTA RODANDO! [0.0.1]"}) })
 app.use( '/api', routes );
 
 // Necessario para Deploy
