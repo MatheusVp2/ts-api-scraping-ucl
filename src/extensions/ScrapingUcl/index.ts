@@ -119,4 +119,20 @@ export class ScrapingUcl {
         } ).toArray()
     }
 
+    static getAulas ( html: any ) {
+        const $ = cheerio.load(html)
+        return $('ul').map( ( index, item ) => {
+            const aula = $(item).find('li h5')
+            const materia = (aula[0].children[0] as any).data.trim()
+            const professor = (aula[0].children[2] as any).children[0].data.trim().replace('Professor: ', '')
+            const horario = $(item).find('div[id="lista_horario"]')
+            return horario.map( ( index_div, item_div ) => {
+                const semana = ( $(item_div).children()[0].children[0] as any ).data.trim()
+                const horario = ( $(item_div).children()[1].children[0] as any ).data.trim()
+                const sala = ( $(item_div).children()[2].children[0] as any ).data.trim()
+                return { materia, professor, semana, horario, sala }
+            }).toArray();
+        }).toArray()
+    }
+
 }

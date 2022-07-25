@@ -6,11 +6,9 @@
   "scripts": {
     "build" : "tsc --outDir public",
     "start" : "node index.js",
-    "start:vercel": "vercel dev",
-    "deploy" : "vercel deploy --prod",
     "dev": "ts-node-dev src/server.ts --respawn --transpileOnly",
-    "script:code": "ts-node src/script.ts",
-    "teste:code": "ts-node src/teste.ts"
+    "script": "ts-node src/script.ts",
+    "teste": "ts-node src/teste.ts"
   },
   "keywords": [],
   "author": "Matheus Oliveira & Breno Robert",

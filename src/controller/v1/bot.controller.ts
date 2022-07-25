@@ -121,7 +121,27 @@ export class  BotController {
     }
 
     async horarios ( request: Request, response: Response ) {
-        
+        try {
+            const query = request.query as ParamsGetType;
+            BotNotasUseCase.validateParams(query)
+
+            const userRepository = new UserRepository()
+            const foundUser = await userRepository.findUserByDiscordId(query.discord_id)
+            if (foundUser.Count === 0) throw new UserNotFoundError("Usuário não encontrado, registre-se!")
+
+            const user = foundUser.Items[0] as UserType
+            const service = new ServiceUcl()
+            const pagina =  await service.horario( { session: user.session } )
+
+            const periodos = ScrapingUcl.getPeriodos( pagina, IdsTabsPeriodosEnum.HORARIOS )
+            const pagePeriodo = ScrapingUcl.getHtmlPeriodo(pagina, periodos[0])
+            const horarios = ScrapingUcl.getHorarios(pagePeriodo);
+
+            response.status(200).json(horarios)
+        } catch (error) {
+            const { code, name, message } = ExtractError.of(error)
+            response.status(code).json({ name, message })
+        }
     }
 
     async boletos ( request: Request, response: Response ) {
