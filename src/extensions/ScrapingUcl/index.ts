@@ -119,7 +119,7 @@ export class ScrapingUcl {
         } ).toArray()
     }
 
-    static getAulas ( html: any ) {
+    static getHorarios ( html: any ) {
         const $ = cheerio.load(html)
         return $('ul').map( ( index, item ) => {
             const aula = $(item).find('li h5')
